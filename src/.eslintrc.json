@@ -1,0 +1,113 @@
+{
+  "root": true,
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 2016,
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "extends": ["prettier", "plugin:react/recommended"],
+  "plugins": ["prettier", "import", "simple-import-sort", "react-hooks"],
+  "rules": {
+    "react/prefer-stateless-function": "warn",
+    "react/no-this-in-sfc": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "import/no-unresolved": 2,
+    "eqeqeq": ["error", "smart"],
+    "no-var": "off",
+    "no-undef": 0, //"warn",
+    "react/jsx-filename-extension": "off",
+    "no-console": 0, //["warn", { "allow": ["warn", "error", "info"] }],
+    "no-unused-vars": 0, //["warn", { "caughtErrors": "none" }],
+
+    "prettier/prettier": [
+      "error",
+      {
+        "trailingComma": "es5",
+        "singleQuote": true
+      }
+    ],
+    // For these two rules see https://github.com/prettier/eslint-plugin-prettier#recommended-configuration
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off",
+
+    "react/prop-types": 0, //Change when proptypes is implemented
+    "react/jsx-boolean-value": "warn",
+    "react/jsx-fragments": "warn",
+    "react/self-closing-comp": "warn",
+    "object-shorthand": [2, "always"],
+    // More details about import/order rule:
+    // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "external",
+          "builtin",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "{../,../../../,../../../../}storeRedux/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}/server/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../,../../../../../}/graphql/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}/api/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}/overrideComponents/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}/sharedComponents/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}/hooks/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}utils/**",
+            "group": "internal",
+            "position": "after"
+          },
+          {
+            "pattern": "{../,../../../,../../../../}assets/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ]
+      }
+    ]
+  }
+}

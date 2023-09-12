@@ -1,0 +1,4 @@
+/custom_modules/*
+/node_modules/*
+/ios/Pods/*
+/android/*

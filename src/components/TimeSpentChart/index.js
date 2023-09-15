@@ -48,9 +48,9 @@ const TimeSpentChart = (props) => {
 
         const conf = {
           chart: {
-            type: 'bar',
+            type: 'column',
             animation: {
-              duration: 1000,
+              duration: 100,
             },
             style: {
               fontFamily: 'Roboto, sans-serif',

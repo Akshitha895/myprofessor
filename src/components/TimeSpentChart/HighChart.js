@@ -4,6 +4,7 @@ import {
   View,
   //  WebView,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 const win = Dimensions.get('window');
@@ -29,6 +30,7 @@ class ChartWeb extends Component {
                     </style>
                     <head>
                         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+                        <script src="https://code.highcharts.com/5.0.12/highcharts.js"></script>
                         ${
                           this.props.stock
                             ? '<script src="https://code.highcharts.com/stock/highstock.js"></script>'
@@ -44,32 +46,27 @@ class ChartWeb extends Component {
                             ? '<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>'
                             : ''
                         }
-                        <script src="https://code.highcharts.com/modules/exporting.js"></script>
-                        <script>
-                        $(function () {
-                            Highcharts.setOptions(${JSON.stringify(
-                              this.props.options
-                            )});
-                            Highcharts.${
-                              this.props.stock ? 'stockChart' : 'chart'
-                            }('container', `,
-      end: `           );
-                        });
-                        </script>
                     </head>
                     <body>
-                        <div id="container">
-                        </div>
+                        <div id="container"></div>
                     </body>
-                </html>`,
+                    <script>
+                      $(function () {
+                        Highcharts.chart('container', ${JSON.stringify(this.props.config)});
+                        Highcharts.setOptions(${JSON.stringify(
+                          this.props.options
+                        )});
+                      })
+                    </script>
+          </html>
+            `,
+      end: `</html>`,
       Wlayout: {
         height: win.height,
         width: win.width,
       },
     };
   }
-
-  // used to resize on orientation of display
   reRenderWebView(e) {
     this.setState({
       height: e.nativeEvent.layout.height,
@@ -84,26 +81,27 @@ class ChartWeb extends Component {
     });
 
     config = JSON.parse(config);
-    let concatHTML = `${this.state.init}${flattenObject(config)}${
-      this.state.end
-    }`;
+    // let concatHTML = `${this.state.init}${flattenObject(config)}${
+    //   this.state.end
+    // }`;
 
     return (
-      // <View style={this.props.style}>
-      <WebView
-        androidLayerType="hardware"
-        onLayout={this.reRenderWebView.bind(this)}
-        //   onLayout={this.reRenderWebView}
-        // style={styles.full}
-        source={{ html: concatHTML, baseUrl: 'web/' }}
-        javaScriptEnabled
-        domStorageEnabled
-        scalesPageToFit
-        scrollEnabled={false}
-        automaticallyAdjustContentInsets
-        {...this.props}
-      />
-      // </View>
+      <SafeAreaView style={this.props.style}>
+        <WebView
+          androidLayerType="hardware"
+          onLayout={this.reRenderWebView.bind(this)}
+          // onLayout={this.reRenderWebView}
+          // style={styles.full}
+          source={{ html: `${this.state.init}`, baseUrl: 'web/' }}
+          javaScriptEnabled
+          domStorageEnabled
+          scalesPageToFit
+          scrollEnabled={false}
+          automaticallyAdjustContentInsets
+          height={500}
+          {...this.props}
+        />
+       </SafeAreaView>
     );
   }
 }

@@ -520,7 +520,7 @@ class EditProfile extends Component {
                 {this.state.initialspinnerr ? null : (
                   <TouchableOpacity onPress={this.selectPhotoTapped}>
                     {this.state.profilepic ? (
-                      this.state.profilepic?.indexOf('https') !== '-1' ? (
+                      this.state.profilepic?.indexOf('https') !== -1 ? (
                         <FastImage
                           source={{ uri: this.state.profilepic }}
                           style={{
@@ -530,7 +530,7 @@ class EditProfile extends Component {
                             alignSelf: 'center',
                           }}
                         />
-                      ) : this.state.profilepic.indexOf('https') === '-1' ? (
+                      ) : this.state.profilepic.indexOf('https') === -1 ? (
                         <FastImage
                           source={{
                             uri: `data:image/gif;base64,${this.state.profilepic}`,

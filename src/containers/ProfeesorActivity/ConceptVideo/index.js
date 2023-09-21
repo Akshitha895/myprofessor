@@ -31,7 +31,7 @@ class ProfConceptVideo extends Component {
       newmodal: false,
       data: {},
       normalvideodata: null,
-      questionsArray: null,
+      questionsArray: [],
       analyticsData: {},
       token: '',
       showfullscreen: false,

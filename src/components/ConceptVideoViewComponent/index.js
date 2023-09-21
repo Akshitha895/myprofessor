@@ -40,7 +40,7 @@ const ConceptVideoViewComponent = (props) => {
   useEffect(() => {
     Orientation.addOrientationListener(handleOrientation);
     // console.log("PRopssss.......",questionsArray)
-    if (questionsArray.length > 0) {
+    if (questionsArray?.length > 0) {
       //   console.log("hhhhhhh")
       let orders = questionsArray;
       orders.sort(function (a, b) {

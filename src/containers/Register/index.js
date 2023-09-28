@@ -228,10 +228,10 @@ class Register extends Component {
       _this.setState({
         userData: JSON.parse(value),
       });
-      if (_this.props.showotpscreen) {
-        //alert("kncjkncvkancknc")
-        _this.generateotp(JSON.parse(value));
-      }
+      // if (_this.props.showotpscreen) {
+      //   //alert("kncjkncvkancknc")
+      //   _this.generateotp(JSON.parse(value));
+      // }
     }
 
     this.getUniversities();
@@ -412,7 +412,11 @@ class Register extends Component {
               userData: json.data.user,
             });
             AsyncStorage.setItem('@user', JSON.stringify(json.data.user));
-            this.generateotp(json.data.user);
+            this.setState({
+              showOTP: true,
+              spinner: false,
+            });
+            // this.generateotp(json.data.user);
           } else {
             this.setState({ spinner: false });
 
@@ -645,9 +649,9 @@ class Register extends Component {
           <>
             <>
               <View style={{ flex: 1 }}>
-                <TouchableOpacity onPress={() => AsyncStorage.clear()}>
+                {/* <TouchableOpacity onPress={() => AsyncStorage.clear()}>
                   <Text>Clear</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <ImageBackground
                   source={require('../../assets/images/login/newloginbg.png')}
                   style={{ width: '100%', height: '100%' }}

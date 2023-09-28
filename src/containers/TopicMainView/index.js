@@ -1232,28 +1232,22 @@ class TopicMainView extends Component {
 
   handleConfirm = (date) => {
     console.log(
-      'A date has been picked: ',
+      'A date has been picked:: ',
       date,
-      moment(new Date()).format('lll')
+      moment(new Date(date)).format('lll')
     );
     if (date > new Date()) {
       this.setState({
         date: moment(new Date(date)).format('lll'),
         showpicker: false,
-        dateformar: moment(new Date(date)).format(),
-      });
-      this.setState({
+        dateformar: moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss'),
         showerrormodel: false,
       });
-      // alert("dfnd")
     } else {
       this.setState({
         date: moment(new Date(date)).format('lll'),
         showpicker: false,
-        dateformar: moment(new Date(date)).format(),
-      });
-
-      this.setState({
+        dateformar: moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss'),
         showerrormodel: true,
       });
     }
@@ -1292,10 +1286,12 @@ class TopicMainView extends Component {
           userId: this.state.useDetails.userInfo.userId,
           scheduleType: 'topic',
           scheduleTypeId: this.props.data.topicId,
-          scheduleDate: this.state.date,
+          scheduleDate: this.state.dateformar,
           additionalInfo: JSON.stringify({
             semesterId: this.state.useDetails.userOrg.semesterId,
-            subjectId: this.props.data.subjectId,
+            subjectId: this.props.topicsdata?.subjectId
+              ? this.props.topicsdata.subjectId
+              : this.props.data.subjectId,
             chapterId: this.props.topicsdata?.chapterId
               ? this.props.topicsdata.chapterId
               : this.props.data.chapterId,
@@ -1412,10 +1408,12 @@ class TopicMainView extends Component {
         userId: this.state.useDetails.userInfo.userId,
         scheduleType: 'topic',
         scheduleTypeId: this.props.data.topicId,
-        scheduleDate: this.state.date,
+        scheduleDate: this.state.dateformar,
         additionalInfo: JSON.stringify({
           semesterId: this.state.useDetails.userOrg.semesterId,
-          subjectId: this.props.data.subjectId,
+          subjectId: this.props.topicsdata?.subjectId
+            ? this.props.topicsdata.subjectId
+            : this.props.data.subjectId,
           chapterId: this.props.topicsdata?.chapterId
             ? this.props.topicsdata.chapterId
             : this.props.data.chapterId,

@@ -686,7 +686,10 @@ class TopicMainView extends Component {
             topicindata: this.props.data,
             from: this.props.from,
           });
-        } else if (item.activityType === 'video') {
+        } else if (
+          item.activityType === 'video' ||
+          item.activityType === 'conceptual_video'
+        ) {
           Actions.push('normalvideoview', {
             index,
             smartres: newarray,
@@ -733,16 +736,16 @@ class TopicMainView extends Component {
             topicindata: this.props.data,
             from: this.props.from,
           });
-        } else if (item.activityType === 'conceptual_video') {
-          Actions.push('conceptvideo', {
-            index,
-            smartres: newarray,
-            data: item,
-            topicData: this.props.topicsdata,
-            subjectData: this.props.subjectData,
-            topicindata: this.props.data,
-            from: this.props.from,
-          });
+          // } else if (item.activityType === 'conceptual_video') {
+          //   Actions.push('conceptvideo', {
+          //     index,
+          //     smartres: newarray,
+          //     data: item,
+          //     topicData: this.props.topicsdata,
+          //     subjectData: this.props.subjectData,
+          //     topicindata: this.props.data,
+          //     from: this.props.from,
+          //   });
         } else {
           alert('coming soon  ' + item.activityType);
         }
@@ -775,7 +778,10 @@ class TopicMainView extends Component {
           topicindata: this.props.data,
           from: this.props.from,
         });
-      } else if (item.activityType === 'video') {
+      } else if (
+        item.activityType === 'video' ||
+        item.activityType === 'conceptual_video'
+      ) {
         Actions.push('normalvideoview', {
           index,
           smartres: newarray,
@@ -822,16 +828,16 @@ class TopicMainView extends Component {
           topicindata: this.props.data,
           from: this.props.from,
         });
-      } else if (item.activityType === 'conceptual_video') {
-        Actions.push('conceptvideo', {
-          index,
-          smartres: newarray,
-          data: item,
-          topicData: this.props.topicsdata,
-          subjectData: this.props.subjectData,
-          topicindata: this.props.data,
-          from: this.props.from,
-        });
+        // } else if (item.activityType === 'conceptual_video') {
+        //   Actions.push('conceptvideo', {
+        //     index,
+        //     smartres: newarray,
+        //     data: item,
+        //     topicData: this.props.topicsdata,
+        //     subjectData: this.props.subjectData,
+        //     topicindata: this.props.data,
+        //     from: this.props.from,
+        //   });
       } else {
         alert('coming soon' + item.type);
       }
@@ -966,6 +972,7 @@ class TopicMainView extends Component {
                     {item.pdfPages} Pages
                   </Text>
                 ) : item.activityType === 'conceptual_video' ||
+                  item.activityType === 'video' ||
                   item.activityType === 'youtube' ? (
                   <Text
                     style={{

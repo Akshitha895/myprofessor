@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import DeviceConstants from 'react-native-device-constants';
+import moment from 'moment';
 import Modal from 'react-native-modal';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,12 +35,17 @@ class NormalVideo extends Component {
       analyticsData: {},
       token: '',
       showfullscreen: false,
+      activityStartTime: null,
     };
     this.videocomref = React.createRef();
 
     this.onRewatch = this.onRewatch.bind(this);
   }
   componentDidMount() {
+    const activityStartTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    this.setState({
+      activityStartTime,
+    });
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.backAction
@@ -70,6 +76,7 @@ class NormalVideo extends Component {
           this.setState(
             {
               token: JSON.parse(token),
+              userDetails: data,
             },
             () => this.getanalytics()
           );
@@ -119,45 +126,100 @@ class NormalVideo extends Component {
       })
       .catch((error) => console.error(error));
   }
-  updateAnalytics(data, duration) {
-    console.log('mmmmmm', data, duration);
+  updateAnalytics(newdata, duration) {
+    console.log('mmmmmm', newdata, this.state.userDetails);
+    const { data, topicindata, topicData } = this.props;
     var body = {
-      activity_status: 0,
-      video_played: Math.round(data),
-      pdf_page: 0,
-      video_duration: Math.round(duration),
+      activityDimId: data.activityDimId,
+      universityId: this.state.userDetails.userOrg.universityId,
+      branchId: this.state.userDetails.userOrg.branchId,
+      semesterId: this.state.userDetails.userOrg.semesterId,
+
+      gradeId: this.state.userDetails.userOrg.gradeId,
+      subjectId: topicData?.subjectId
+        ? topicData.subjectId
+        : topicindata?.subjectId
+        ? topicindata.subjectId
+        : null,
+      chapterId: topicData?.chapterId
+        ? topicData.chapterId
+        : topicindata?.chapterId
+        ? topicindata.chapterId
+        : null,
+      topicId: topicData?.topicId
+        ? topicData.topicId
+        : topicindata?.topicId
+        ? topicindata.topicId
+        : null,
+      activityStartedAt: this.state.activityStartTime,
+      activityEndedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
+      videoWatchedInSec: duration,
+      videoPausedAt: newdata,
     };
     console.log(
-      'bodyyy',
+      'dfnbdkjhfbkjhdbfkjdbfkj',
       body,
-      baseUrl + '/analytics/' + this.state.analyticsData.reference_id
+      baseUrl +
+        `/users/${this.state.userDetails.userInfo.userId}/analytics/capture-activity`
     );
-    var url = baseUrl + '/analytics/' + this.state.analyticsData.reference_id;
+    var userId = this.state.userDetails.userInfo.userId;
+    var url = baseUrl + `/users/${userId}/analytics/capture-activity`;
+    console.log('dknckladkldf', url);
     fetch(url, {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        token: this.state.token,
+        jwt: this.state.token,
       },
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
       .then((json) => {
-        if (json.data) {
+        console.log('kanckanCKACKD', JSON.stringify(json));
+        if (json.code === 201) {
           const data = json.data;
-          console.log(JSON.stringify(json));
+
           this.setState({
             analyticsData: data,
           });
-          //    Snackbar.show({
-          // 	text: "Analytics Updated succesfully",
-          // 	duration: Snackbar.LENGTH_SHORT,
-          //   });
         } else {
           console.log(JSON.stringify(json.message));
         }
       })
       .catch((error) => console.error(error));
+    // var body = {
+    //   activity_status: 0,
+    //   video_played: Math.round(data),
+    //   pdf_page: 0,
+    //   video_duration: Math.round(duration),
+    // };
+    // console.log('bodyyy', body, baseUrl + '/analytics/' + this.props.userId);
+    // var url = baseUrl + '/analytics/' + this.props.userId;
+    // fetch(url, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     token: this.state.token,
+    //   },
+    //   body: JSON.stringify(body),
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     if (json.data) {
+    //       const data = json.data;
+    //       console.log(JSON.stringify(json));
+    //       this.setState({
+    //         analyticsData: data,
+    //       });
+    //       //    Snackbar.show({
+    //       // 	text: "Analytics Updated succesfully",
+    //       // 	duration: Snackbar.LENGTH_SHORT,
+    //       //   });
+    //     } else {
+    //       console.log(JSON.stringify(json.message));
+    //     }
+    //   })
+    //   .catch((error) => console.error(error));
   }
   onBackNew(data, duration) {
     console.log('sasasaa', data, 'vvv', duration);
@@ -175,10 +237,10 @@ class NormalVideo extends Component {
       from: this.props.from,
     });
   }
-  onActivityNext(data, duration) {
-    //console.log("11111111",data,"vvv",duration)
-    if (data) {
-      this.updateAnalytics(data, duration);
+  onActivityNext(currentTime, duration) {
+    console.log('11111111', currentTime, 'vvv', duration);
+    if (currentTime) {
+      this.updateAnalytics(currentTime, duration);
     } else {
       this.updateAnalytics(0, 0);
     }
@@ -236,7 +298,7 @@ class NormalVideo extends Component {
   getActivityInfo() {
     //  alert(JSON.stringify(this.props.data))
     const { data } = this.props;
-    const url = baseUrl + '/activities/forStudent/' + data.reference_id; //baseUrl+"/activities/info/" + data.reference_id
+    const url = baseUrl + '/activities/forStudent/' + data.id; //baseUrl+"/activities/info/" + data.reference_id
     fetch(url, {
       method: 'GET',
       headers: {
@@ -281,7 +343,11 @@ class NormalVideo extends Component {
     this.funcComRef('previous', 'Val');
   }
   onActivityNextfirst() {
-    this.funcComRef('next', 'Val');
+    if (this.state.normalvideodata) {
+      this.funcComRef('next', 'Val');
+    } else {
+      this.onActivityNext(null);
+    }
   }
   onBack() {
     this.funcComRef('gettime', 'Val');
@@ -304,9 +370,9 @@ class NormalVideo extends Component {
     var newarray = this.props.smartres;
     var newobj = newarray[this.props.index + 1];
     var index = this.props.index;
-    //  alert(JSON.stringify(newobj))
+    // alert(JSON.stringify(newobj));
     if (newobj) {
-      if (newobj.type === 'YOUTUBE') {
+      if (newobj.activityType === 'youtube') {
         Actions.videoview({
           type: 'reset',
           index: index + 1,
@@ -318,7 +384,7 @@ class NormalVideo extends Component {
           from: this.props.from,
           data1: this.props.data,
         });
-      } else if (newobj.type === 'VIDEO') {
+      } else if (newobj.activityType === 'video') {
         Actions.normalvideoview({
           type: 'reset',
           type: 'reset',
@@ -332,10 +398,10 @@ class NormalVideo extends Component {
           data1: this.props.data,
         });
       } else if (
-        newobj.type === 'PRE' ||
-        newobj.type === 'OBJ' ||
-        newobj.type === 'POST' ||
-        newobj.type === 'SUB'
+        newobj.activityType === 'pre' ||
+        newobj.activityType === 'obj' ||
+        newobj.activityType === 'post' ||
+        newobj.activityType === 'sub'
       ) {
         Actions.preassesment({
           type: 'reset',
@@ -348,7 +414,10 @@ class NormalVideo extends Component {
           from: this.props.from,
           data1: this.props.data,
         });
-      } else if (newobj.type === 'PDF' || newobj.type === 'HTML5') {
+      } else if (
+        newobj.activityType === 'pdf' ||
+        newobj.activityType === 'html5'
+      ) {
         Actions.pdfview({
           type: 'reset',
           index: index + 1,
@@ -360,7 +429,7 @@ class NormalVideo extends Component {
           from: this.props.from,
           data1: this.props.data,
         });
-      } else if (newobj.type === 'WEB') {
+      } else if (newobj.activityType === 'web') {
         Actions.weblinkview({
           type: 'reset',
           index: index + 1,
@@ -372,7 +441,7 @@ class NormalVideo extends Component {
           from: this.props.from,
           data1: this.props.data,
         });
-      } else if (newobj.type === 'GAMES') {
+      } else if (newobj.activityType === 'games') {
         Actions.push('games', {
           index: index + 1,
           smartres: this.props.smartres,
@@ -383,7 +452,7 @@ class NormalVideo extends Component {
           from: this.props.from,
           data1: this.props.data,
         });
-      } else if (newobj.type === 'CONCEPTUALVIDEO') {
+      } else if (newobj.activityType === 'conceptual_video') {
         Actions.push('conceptvideo', {
           index: index + 1,
           smartres: this.props.smartres,
@@ -420,7 +489,7 @@ class NormalVideo extends Component {
         var index = this.props.index;
         //  alert(JSON.stringify(newobj))
         if (newobj) {
-          if (newobj.type === 'YOUTUBE') {
+          if (newobj.activityType === 'youtube') {
             Actions.videoview({
               type: 'reset',
               index: index - 1,
@@ -432,7 +501,7 @@ class NormalVideo extends Component {
               from: this.props.from,
               data1: this.props.data,
             });
-          } else if (newobj.type === 'VIDEO') {
+          } else if (newobj.activityType === 'video') {
             Actions.normalvideoview({
               type: 'reset',
               index: index - 1,
@@ -445,9 +514,9 @@ class NormalVideo extends Component {
               data1: this.props.data,
             });
           } else if (
-            newobj.type === 'OBJ' ||
-            newobj.type === 'POST' ||
-            newobj.type === 'SUB'
+            newobj.activityType === 'obj' ||
+            newobj.type === 'post' ||
+            newobj.activityType === 'sub'
           ) {
             Actions.preassesment({
               type: 'reset',
@@ -460,7 +529,10 @@ class NormalVideo extends Component {
               from: this.props.from,
               data1: this.props.data,
             });
-          } else if (newobj.type === 'PDF' || newobj.type === 'HTML5') {
+          } else if (
+            newobj.activityType === 'pdf' ||
+            newobj.activityType === 'html5'
+          ) {
             Actions.pdfview({
               type: 'reset',
               index: index - 1,
@@ -472,7 +544,7 @@ class NormalVideo extends Component {
               from: this.props.from,
               data1: this.props.data,
             });
-          } else if (newobj.type === 'WEB') {
+          } else if (newobj.activityType === 'web') {
             Actions.weblinkview({
               type: 'reset',
               index: index - 1,
@@ -484,7 +556,7 @@ class NormalVideo extends Component {
               from: this.props.from,
               data1: this.props.data,
             });
-          } else if (newobj.type === 'PRE') {
+          } else if (newobj.activityType === 'pre') {
             Actions.topicmainview({
               type: 'reset',
               data: this.props.topicindata,
@@ -494,7 +566,7 @@ class NormalVideo extends Component {
               from: this.props.from,
               data1: this.props.data,
             });
-          } else if (newobj.type === 'GAMES') {
+          } else if (newobj.activityType === 'games') {
             Actions.push('games', {
               index: index - 1,
               smartres: this.props.smartres,
@@ -505,7 +577,7 @@ class NormalVideo extends Component {
               from: this.props.from,
               data1: this.props.data,
             });
-          } else if (newobj.type === 'CONCEPTUALVIDEO') {
+          } else if (newobj.activityType === 'conceptual_video') {
             Actions.push('conceptvideo', {
               index: index - 1,
               smartres: this.props.smartres,

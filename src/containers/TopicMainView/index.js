@@ -1775,8 +1775,8 @@ class TopicMainView extends Component {
                             }}
                           >
                             <Text style={{ fontSize: 18 }}>
-                              {this.state.dateformar ??
-                                this.state.date ??
+                              {this.state.dateformar ||
+                                this.state.date ||
                                 'Select Date and Time'}
                             </Text>
                           </TouchableOpacity>

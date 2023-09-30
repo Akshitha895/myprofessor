@@ -55,7 +55,7 @@ class TopicMainView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: 'Select Date and Time',
+      date: null,
       dateformar: null,
       alreadyschedule: false,
       time: 'Select Time',
@@ -146,7 +146,7 @@ class TopicMainView extends Component {
     var url =
       baseUrl +
       `/user-schedules?userId=${userId}&scheduleType=${scheduleType}&scheduleTypeId=${scheduleTypeId}`;
-    //console.log("URLLLL", url)
+    console.log('URLLLL', url);
     fetch(url, {
       method: 'GET',
       headers: {
@@ -156,12 +156,12 @@ class TopicMainView extends Component {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log('dalfjnclskjdnvlksdnv', json);
+        console.log('savelaterdata', json);
         if (json.code === 201) {
-          if (json.data) {
+          if (json.data?.scheduleDate) {
             console.log(
-              'dbfkhjdavkjhdakfjdgfkd',
-              JSON.stringify(json.data.scheduleDate),
+              'savelaterdata date format',
+              json.data,
               moment.utc(json.data.scheduleDate).format('MMMM Do YYYY, h:mm a')
             );
             this.setState({
@@ -171,14 +171,14 @@ class TopicMainView extends Component {
             });
           } else {
             this.setState({
-              date: 'Select Date and Time',
+              date: null,
               alreadyschedule: false,
               scheduledata: null,
             });
           }
         } else {
           this.setState({
-            date: 'Select Date and Time',
+            date: null,
             alreadyschedule: false,
             scheduledata: null,
           });
@@ -1245,14 +1245,14 @@ class TopicMainView extends Component {
     );
     if (date > new Date()) {
       this.setState({
-        date: moment(new Date(date)).format('lll'),
+        // date: moment(new Date(date)).format('lll'),
         showpicker: false,
         dateformar: moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss'),
         showerrormodel: false,
       });
     } else {
       this.setState({
-        date: moment(new Date(date)).format('lll'),
+        // date: moment(new Date(date)).format('lll'),
         showpicker: false,
         dateformar: moment(new Date(date)).format('YYYY-MM-DD HH:mm:ss'),
         showerrormodel: true,
@@ -1267,8 +1267,8 @@ class TopicMainView extends Component {
   };
 
   addtocalendernew() {
-    console.log('ksdklsjkdslkd', this.state.alreadyschedule);
-    if (this.state.alreadyschedule) {
+    console.log('alreadyschedule', this.state.alreadyschedule);
+    if (this.state.alreadyschedule && this.state?.scheduledata?.id) {
       this.updatecalender();
     } else {
       if (this.props.from === 'dashboard') {
@@ -1334,7 +1334,6 @@ class TopicMainView extends Component {
     }
   }
   updatecalender() {
-    console.log('dmnfldf');
     if (this.props.from === 'dashboard') {
       this.addtocalender();
     } else {
@@ -1348,12 +1347,12 @@ class TopicMainView extends Component {
         '#c44921',
       ];
       var newitem = newarray[Math.floor(Math.random() * newarray.length)];
-      var url = baseUrl + `/user-schedules/${this.state.scheduledata.id}`;
+      var url = baseUrl + `/user-schedules/${this.state?.scheduledata?.id}`;
       let payload = {
         userId: this.state.useDetails.userInfo.userId,
         scheduleType: 'topic',
         scheduleTypeId: this.props.data.topicId,
-        scheduleDate: this.state.date,
+        scheduleDate: this.state.dateformar,
         additionalInfo: JSON.stringify({
           semesterId: this.state.useDetails.userOrg.semesterId,
           subjectId: this.props.data.subjectId,
@@ -1363,6 +1362,7 @@ class TopicMainView extends Component {
           title: this.props.data.topicName,
         }),
       };
+      console.log('updatecalender api', payload);
 
       fetch(url, {
         method: 'PUT',
@@ -1375,19 +1375,16 @@ class TopicMainView extends Component {
       })
         .then((response) => response.json())
         .then((json) => {
-          console.log('ddd.........', json);
+          console.log('updatecalender data received', json);
           if (json.code === 201) {
             this.setState({ showmodal: false }, () => {
               this.getsavelaterdata();
-              alert('Scheduled Successfully');
+              alert('Schedule Updated Successfully');
             });
           } else {
-            this.setState(
-              { showmodal: false, date: 'Select Date and Time' },
-              () => {
-                alert(json.error);
-              }
-            );
+            this.setState({ showmodal: false, date: null }, () => {
+              alert(json.error);
+            });
           }
         })
         .catch((error) => console.error(error));
@@ -1439,7 +1436,7 @@ class TopicMainView extends Component {
       })
         .then((response) => response.json())
         .then((json) => {
-          console.log('ddd.........', json);
+          console.log('addtocalendar data received', json);
           if (json.code === 201) {
             this.setState({ showmodal: false }, () => {
               this.getsavelaterdata();
@@ -1778,7 +1775,9 @@ class TopicMainView extends Component {
                             }}
                           >
                             <Text style={{ fontSize: 18 }}>
-                              {this.state.date}
+                              {this.state.dateformar ??
+                                this.state.date ??
+                                'Select Date and Time'}
                             </Text>
                           </TouchableOpacity>
 

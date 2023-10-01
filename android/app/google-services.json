@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "916634773599",
+    "project_id": "mypro2-notfications",
+    "storage_bucket": "mypro2-notfications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916634773599:android:08e245df9970d5d1bf13ea",
+        "android_client_info": {
+          "package_name": "com.smartgen.myprofessor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916634773599-ne8kmu5ug890ar7gm6brpv56j4htjo76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDenAEUh5JrockapcZH42oDdVXcAz7qSOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916634773599-ne8kmu5ug890ar7gm6brpv56j4htjo76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

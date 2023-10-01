@@ -1784,6 +1784,10 @@ class TopicMainView extends Component {
                           <DateTimePickerModal
                             isVisible={this.state.showpicker}
                             mode="datetime"
+                            date={
+                              new Date(this.state.date) ||
+                              new Date(this.state.dateformar)
+                            }
                             minimumDate={new Date()}
                             // minimumDate={new Date(Date.now())}
                             onConfirm={this.handleConfirm.bind(this)}

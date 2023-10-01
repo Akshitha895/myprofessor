@@ -69,15 +69,18 @@ class Dashboard extends Component {
       // (required) Called when a remote is received or opened, or local notification is opened
       onNotification(notification) {
         console.log('dashboardnotifca:', notification);
-        if (notification.data.notificationType === 'notification') {
-          //alert(notification.data.notificationType)
-          Actions.push('notifications', { title: 'tabs' });
-        }
+        Actions.push('notifications', { title: 'tabs' });
+        // if (notification.data.notificationType === 'notification') {
+        //   //alert(notification.data.notificationType)
+        //   Actions.push('notifications', { title: 'tabs' });
+        // }
         // process the notification
 
         // (required) Called when a remote is received or opened, or local notification is opened
         notification.finish(PushNotificationIOS.FetchResult.NoData);
       },
+
+      // Android only
       senderID: '916634773599',
 
       // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
@@ -115,16 +118,16 @@ class Dashboard extends Component {
     });
 
     // PushNotification.createChannel(
-    // 	{
-    // 		channelId: "stepupchannel", // (required)
-    // 		channelName: "stepupchannel", // (required)
-    // 		channelDescription: "A channel to categorise your notifications", // (optional) default: undefined.
-    // 		playSound: true, // (optional) default: true
-    // 		soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
-    // 		import ance: 4, // (optional) default: 4. Int value of the Android notification import ance
-    // 		vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
-    // 	},
-    // 	(created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+    //   {
+    //     channelId: 'stepupchannel', // (required)
+    //     channelName: 'stepupchannel', // (required)
+    //     channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
+    //     playSound: true, // (optional) default: true
+    //     soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+    //     importance: 4, // (optional) default: 4. Int value of the Android notification import ance
+    //     vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
+    //   },
+    //   (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
     // );
     // PushNotification.localNotification({
     // 	//... You can use all the options from localNotifications
